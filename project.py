@@ -56,12 +56,21 @@ class Grid:
     def change(pos,val):
         Grid.l[pos - 1] = val
 
+    #magic square
+    '''
+    8   3   4 
+    1   5   9
+    6   7   2
+    '''
+    magic_square = [8,3,4,1,5,9,6,7,2]
+
 class players:
 
     def __init__(self):
         self.fields = ["Name","symbol","track"]
         self.records = []
 
+    # adding a player record
     def add(self,records):
         self.records.extend(records)
 
@@ -72,7 +81,8 @@ class players:
     def welcome():
         return "Hello player\nWelcome to Tic-Tac-Toe\nplease enter the following info:"
     
-    @staticmethod
+    # for getting value safely checking for occupied places
+    @staticmethod    
     def get_val():
         check = True
         while check:
@@ -84,25 +94,24 @@ class players:
             else:
                 check = False
                 return val
-            
-    def won(self):
-        if len(self.records[2]) < 3:
-            return None
-        
-        l = self.records[2]
-        l.sort(reverse=True)
-        diff = []
-        for i in range(len(self.records[2]) - 1):
-            diff.append(l[i] - l[i+1])
-        
-        for i in range(len(diff) - 1):
-            if diff[i] == diff[i+1] and diff[i] != 2:
-                return True
-            elif l[-1] == 3 and diff[i] == diff[i+1] and diff[i] == 2:
-                return True
-                
-        return None
+    
+    def won(self,track):
+        n = len(track)
+        delta = sum(track) - 15
+        match(n):
 
+            case 3:
+                if sum(track) == 15:
+                    return True
+            case 4:
+                if delta in track:
+                    return True
+            case 5:
+                sums = []
+                for i in range(3):
+                    sums.extend(list(map(lambda x:x + track[i],track[i+1:-1])))
+                if delta in sums:
+                    return True
         
 #-------------------------------------------------------#
 '''Actual game play'''
@@ -111,53 +120,51 @@ class players:
 print(players.welcome())
 
 #player 1
-name1 = str(input("Enter your name as player 1: "))
-symbol1 = str(input("Choose your symbol: "))
-track1 = []
+print("Player 1:")
+name = input("Enter your name: ")
+sym = input("Enter your symbol: ")
 p1 = players()
-p1.add([name1,symbol1,track1])
+p1.add([name,sym,[]])
 
 #player 2
-name2 = str(input("Enter your name as player 2: "))
-symbol2 = str(input("Choose your symbol: "))
-track2 = []
+print("Player 2:")
+name = input("Enter your name: ")
+sym = input("Enter your symbol: ")
 p2 = players()
-p2.add([name2,symbol2,track2])
+p2.add([name,sym,[]])
 
-print("Game Starts")
-print("Sample for reference:")
+print("Game starts ..........")
+print("reference grid")
 Grid.show_sample()
 
-i = 0
-while i < 9:
-
-    #player 1
+#gameplay alternating turns
+tie = True
+for i in range(9):
     if i % 2 == 0:
-        print("Player 1 Your turn")
-        val1 = players.get_val()
-        Grid.change(val1,p1.records[p1.fields.index("symbol")])
+        print("player 1 your turn:")
+        n1 = players.get_val()
+        Grid.change(n1,p1.records[1])
         Grid.show()
-        p1.records[2].append(val1)
+        p1.records[2].append(Grid.magic_square[n1-1])
 
-        #check
-        if p1.won() == True:
-            print("Player 1 Won !!!!!!")
+        if p1.won(p1.records[2]):
+            print(f"{p1.records[0]} won !!!!!")
+            tie = False
             break
 
     else:
-        print("Player 2 Your turn")
-        val2 = players.get_val()
-        Grid.change(val2,p2.records[p2.fields.index("symbol")])
+        print("player 2 your turn:")
+        n2 = players.get_val()
+        Grid.change(n2,p2.records[1])
         Grid.show()
-        p2.records[2].append(val2)
-        
-        #check
-        if p2.won() == True:
-            print("Player 2 Won !!!!!!")
-            break
-    i += 1
+        p2.records[2].append(Grid.magic_square[n2-1])
 
-if i >= 9:
-    print("Its a tie")
+        if p2.won(p2.records[2]):
+            print(f"{p2.records[0]} won !!!!!")
+            tie = False
+            break        
+
+if tie:
+    print("Its a tie!")
 
 print("Hope you liked it")
