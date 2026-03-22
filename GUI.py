@@ -2,7 +2,7 @@ import tkinter as tk
 from project import players
 from project import Grid
 
-
+#-------------------------------------------------------------------------------------------------------
 root = tk.Tk()
 
 win_width = 500
@@ -22,8 +22,11 @@ p1.add(["player1","symbol",[]])
 p2 = players()
 p2.add(["player 2","symbol",[]])
 
+#------------------------------------------------------------------------------------------------------
 chance1 = 1
 game_over = False
+
+#function to check winnig and main function in board
 def single_click(button,n,l,l2,l3):
 
     global tie
@@ -63,7 +66,7 @@ def single_click(button,n,l,l2,l3):
         l3.grid(row=0,column=0,sticky=tk.N,pady=8)
         game_over = True
 
-
+#fields class for styled labels for names
 class fields(tk.Label):
 
     def __init__(self,parent,text):
@@ -77,6 +80,7 @@ class fields(tk.Label):
             font = ("Times New Roman",12,"bold"),
         )
 
+#entry field class for taking names of players
 class entry_fields(tk.Entry):
 
     def __init__(self,parent):
@@ -89,6 +93,8 @@ class entry_fields(tk.Entry):
             width=25,
             font = ("Times New Roman",10,"bold"),
         )
+
+#start screen that takes names from players edgecases needs to be handled
 def start_screen():
     og_frame = tk.Frame(
         root,
@@ -153,6 +159,8 @@ def start_screen():
         borderwidth=1,
     )
     next_b.pack(pady=20)
+
+#Styled button class for buttons of the board
 class Btn(tk.Button):
     def __init__(self,parent,command):
 
@@ -168,7 +176,10 @@ class Btn(tk.Button):
             borderwidth=1,
         )
 
+#tie flag
 tie = True
+
+#game screen containig board and main game play logic
 def game_screen():
 
     global chance1
@@ -231,6 +242,7 @@ def game_screen():
         new_btn.pack(fill="both", expand=True)
         buttons.append(new_btn)
 
+#function for linking both the frames i.e start srceen and game screen
 def transition(frame,e1,e2):
 
     p1.records[0] = e1.get()
@@ -238,5 +250,9 @@ def transition(frame,e1,e2):
     frame.destroy()
 
     game_screen()
+
+#-----------------------------------------------------------------------------------
 start_screen()
+#------------------------------------------------------------------------------------
+
 root.mainloop()
